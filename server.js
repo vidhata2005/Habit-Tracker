@@ -21,9 +21,6 @@ const SALT_ROUNDS = 10;
 app.use(cors());
 app.use(express.json());
 
-// Serve static files from 'public' folder
-app.use(express.static(path.join(__dirname, 'public')));
-
 // ----------------- MONGODB CONNECTION -----------------
 if (!process.env.MONGO_URI) {
   console.error("❌ MONGO_URI is not defined in environment variables");
@@ -34,8 +31,11 @@ mongoose.connect(process.env.MONGO_URI)
   .then(() => console.log('💾 MongoDB connected (nosql)'))
   .catch(err => console.error('❌ MongoDB connection error:', err));
 
-// ----------------- ROOT ROUTE -----------------
-// Serve index.html from public folder
+// ----------------- STATIC FILES & HOMEPAGE -----------------
+// Serve static files from 'public' folder
+app.use(express.static(path.join(__dirname, 'public')));
+
+// Homepage route - serves index.html
 app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
@@ -73,7 +73,7 @@ app.post('/api/login', async (req, res) => {
     if (!username || !password)
       return res.status(400).json({ message: 'Missing fields' });
 
-    // ✅ Search by BOTH username AND email
+    // Search by BOTH username AND email
     const user = await User.findOne({
       $or: [
         { username: username },
@@ -207,7 +207,7 @@ app.delete('/api/scheduled-tasks/:id', async (req, res) => {
   }
 });
 
-// ----------------- DASHBOARD: Today’s Items -----------------
+// ----------------- DASHBOARD: Today's Items -----------------
 app.get('/api/dashboard', async (req, res) => {
   try {
     const { userId } = req.query;
