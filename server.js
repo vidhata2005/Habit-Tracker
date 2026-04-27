@@ -32,8 +32,14 @@ mongoose.connect(MONGO_URI)
   .then(() => console.log('💾 MongoDB connected (nosql)'))
   .catch(err => console.error('❌ MongoDB connection error:', err));
 
-// ----------------- STATIC FILES -----------------
+// ----------------- STATIC FILES & HOMEPAGE -----------------
+// Serve static files from 'public' folder
 app.use(express.static(path.join(__dirname, 'public')));
+
+// HOMEPAGE ROUTE - This sends your index.html file
+app.get('/', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'index.html'));
+});
 
 // ----------------- AUTH ROUTES -----------------
 
