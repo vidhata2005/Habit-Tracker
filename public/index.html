@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Habit Tracker - Build Better Habits</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --teal: #06b6d4;
+      --teal-dark: #028aa5;
+      --bg: #f7fbfc;
+      --muted: #556170;
+      --white: #ffffff;
+      --nav-height: 72px;
+    }
+
+    body, html {
+      margin: 0;
+      padding: 0;
+      font-family: 'Poppins', sans-serif;
+      background: var(--bg);
+      color: #092233;
+    }
+
+    /* NAVBAR */
+    .navbar {
+      height: var(--nav-height);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 1.5rem;
+      background: #ffffffcc;
+      backdrop-filter: blur(6px);
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+      position: sticky;
+      top: 0;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-weight: 700;
+      color: var(--teal-dark);
+      font-size: 2rem;
+      font-family: 'Nunito', sans-serif;
+    }
+
+    .logo span { 
+      color: #073642; 
+    }
+
+    nav ul {
+      list-style: none;
+      display: flex;
+      gap: 1rem;
+      margin: 0;
+      padding: 0;
+      align-items: center;
+    }
+
+    nav a.link {
+      text-decoration: none;
+      font-weight: 600;
+      color: #333;
+      transition: color 0.3s;
+    }
+    nav a.link:hover { color: var(--teal-dark); }
+
+    /* Navbar buttons */
+    .btn-nav {
+      padding: 0.5rem 1rem;
+      border-radius: 8px;
+      font-weight: 600;
+      text-decoration: none;
+      transition: all 0.3s;
+      font-size: 0.95rem;
+    }
+    .btn-login {
+      border: 2px solid var(--teal);
+      color: var(--teal-dark);
+    }
+    .btn-login:hover {
+      background: var(--teal);
+      color: var(--white);
+    }
+    .btn-signup {
+      background: var(--teal);
+      color: var(--white);
+      border: 2px solid var(--teal);
+    }
+    .btn-signup:hover {
+      background: var(--teal-dark);
+    }
+
+    /* HERO SECTION */
+    .hero {
+      min-height: calc(100vh - var(--nav-height));
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      padding: 2rem;
+    }
+
+    .hero h1 {
+      font-size: 2.8rem;
+      margin-bottom: 1rem;
+      color: #073642;
+    }
+    .tagline {
+      max-width: 600px;
+      margin: 0 auto 1.5rem;
+      font-size: 1.1rem;
+      line-height: 1.6;
+      color: var(--muted);
+    }
+
+    .btn-primary {
+      display: inline-block;
+      padding: 0.9rem 1.6rem;
+      background: var(--teal);
+      color: white;
+      border-radius: 10px;
+      text-decoration: none;
+      font-weight: 600;
+      margin-top: 1rem;
+      transition: background 0.3s;
+    }
+    .btn-primary:hover { background: var(--teal-dark); }
+
+    .subtext {
+      font-size: 0.95rem;
+      margin-top: 1rem;
+      color: var(--muted);
+    }
+
+    @media (max-width: 720px) {
+      .hero h1 { font-size: 2rem; }
+      .tagline { font-size: 1rem; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAVBAR -->
+<header class="navbar">
+  <div class="logo"> <span>Habit Tracker</span></div>
+  <nav>
+    <ul>
+      <li><a class="link" href="index.html">Home</a></li>
+      <li><a class="link" href="product.html">Product</a></li>
+      <li><a href="login.html" class="btn-nav btn-login">Login</a></li>
+      <li><a href="signup.html" class="btn-nav btn-signup">Sign Up</a></li>
+    </ul>
+  </nav>
+</header>
+
+<!-- HERO SECTION -->
+<section class="hero">
+  <h1>Free Habit Tracker App</h1>
+  <p class="tagline">
+    GrowTrack helps you build better habits, track time spent on tasks, and stay focused every day.<br>
+    Improve your productivity and personal growth with ease.
+  </p>
+  <a href="login.html" class="btn-primary">Start Tracking — It's Free!</a>
+  <p class="subtext">Available on web, desktop & mobile</p>
+</section>
+
+<script>
+  // API Configuration (for consistency, though this page doesn't make API calls)
+  const API_BASE = 'https://habit-tracker-wsv3.onrender.com';
+  console.log('Habit Tracker Frontend - Backend API:', API_BASE);
+</script>
+
+</body>
+</html>

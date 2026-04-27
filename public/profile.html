@@ -1,0 +1,796 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Profile - GrowTrack</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+  <style>
+    :root {
+      --primary-color: #06b6d4;
+      --primary-dark: #028aa5;
+      --bg-light: #f0f6f7;
+      --card-bg: #ffffff;
+      --text-muted: #555;
+      --success-color: #10b981;
+      --error: #e53e3e;
+    }
+
+    body, html {
+      margin: 0;
+      padding: 0;
+      font-family: 'Poppins', sans-serif;
+      background: var(--bg-light);
+      color: #092233;
+    }
+
+    /* ===== NAVBAR ===== */
+    .navbar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 70px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 100px 0 10px;
+      font-weight: 800;
+      font-size: 2rem;
+      background: #ffffffcc;
+      backdrop-filter: blur(6px);
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+      color: var(--primary-color);
+      z-index: 1000;
+    }
+
+    .logo span { color: #073642; }
+
+    /* ===== MAIN CONTENT ===== */
+    .main-content { 
+      margin-top: 90px; 
+      padding: 40px; 
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      min-height: calc(100vh - 90px);
+    }
+
+    /* ===== PROFILE CONTAINER ===== */
+    .profile-container {
+      width: 100%;
+      max-width: 700px;
+      background: var(--card-bg);
+      padding: 40px;
+      border-radius: 20px;
+      box-shadow: 0 8px 30px rgba(0,0,0,0.08);
+      margin: 0 auto;
+    }
+
+    .profile-header {
+      text-align: center;
+      margin-bottom: 40px;
+      position: relative;
+    }
+
+    .profile-pic-wrapper {
+      position: relative;
+      display: inline-block;
+      margin-bottom: 20px;
+    }
+
+    .profile-pic {
+      width: 150px;
+      height: 150px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 4px solid var(--primary-color);
+      box-shadow: 0 8px 25px rgba(6, 182, 212, 0.2);
+      transition: all 0.3s ease;
+    }
+
+    .edit-pic-btn {
+      position: absolute;
+      bottom: 10px;
+      right: 10px;
+      background: var(--primary-color);
+      color: white;
+      border: none;
+      border-radius: 50%;
+      width: 40px;
+      height: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      font-size: 1rem;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    }
+
+    .edit-pic-btn:hover {
+      background: var(--primary-dark);
+      transform: scale(1.1);
+    }
+
+    input[type="file"] {
+      display: none;
+    }
+
+    .profile-title {
+      color: var(--primary-color);
+      margin: 0;
+      font-size: 2rem;
+      font-weight: 700;
+    }
+
+    .profile-subtitle {
+      color: var(--text-muted);
+      margin: 5px 0 0 0;
+      font-size: 1.1rem;
+      font-weight: 500;
+    }
+
+    /* ===== INFO SECTION ===== */
+    .info-section {
+      margin: 30px 0;
+    }
+
+    .info-row {
+      display: flex;
+      align-items: center;
+      padding: 20px 0;
+      border-bottom: 1px solid #eef2f7;
+      transition: background-color 0.3s ease;
+    }
+
+    .info-row:hover {
+      background-color: #f8fafc;
+      border-radius: 12px;
+      padding: 20px 15px;
+      margin: 0 -15px;
+    }
+
+    .info-row:last-child {
+      border-bottom: none;
+    }
+
+    .info-label {
+      font-weight: 600;
+      color: var(--primary-dark);
+      width: 200px;
+      font-size: 1rem;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .info-label i {
+      font-size: 1.1rem;
+      width: 20px;
+      text-align: center;
+    }
+
+    .info-value {
+      flex: 1;
+      font-size: 1rem;
+      color: #333;
+    }
+
+    .info-value span {
+      padding: 8px 0;
+      display: block;
+    }
+
+    .info-value input {
+      width: 100%;
+      padding: 12px 15px;
+      border-radius: 10px;
+      border: 2px solid #e2e8f0;
+      font-size: 1rem;
+      font-family: 'Poppins', sans-serif;
+      outline: none;
+      transition: all 0.3s ease;
+      background: #f8fafc;
+    }
+
+    .info-value input:focus {
+      border-color: var(--primary-color);
+      background: white;
+      box-shadow: 0 0 0 3px rgba(6, 182, 212, 0.1);
+    }
+
+    /* ===== FEEDBACK SECTION ===== */
+    .feedback-section {
+      margin: 40px 0;
+      padding: 30px;
+      background: #f8fafc;
+      border-radius: 15px;
+      border: 2px solid #e2e8f0;
+    }
+
+    .feedback-title {
+      color: var(--primary-color);
+      margin-bottom: 20px;
+      font-size: 1.4rem;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .feedback-form {
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .form-group label {
+      font-weight: 600;
+      color: var(--primary-dark);
+      font-size: 0.9rem;
+    }
+
+    .form-group select,
+    .form-group textarea {
+      padding: 12px 15px;
+      border-radius: 10px;
+      border: 2px solid #e2e8f0;
+      font-size: 1rem;
+      font-family: 'Poppins', sans-serif;
+      outline: none;
+      transition: all 0.3s ease;
+      background: white;
+    }
+
+    .form-group select:focus,
+    .form-group textarea:focus {
+      border-color: var(--primary-color);
+      box-shadow: 0 0 0 3px rgba(6, 182, 212, 0.1);
+    }
+
+    .form-group textarea {
+      resize: vertical;
+      min-height: 100px;
+    }
+
+    .submit-feedback {
+      background: var(--primary-color);
+      color: white;
+      border: none;
+      padding: 12px 25px;
+      border-radius: 10px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      align-self: flex-start;
+    }
+
+    .submit-feedback:hover {
+      background: var(--primary-dark);
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(6, 182, 212, 0.3);
+    }
+
+    /* ===== FEEDBACK SUCCESS MESSAGE ===== */
+    .feedback-success {
+      display: none;
+      background: var(--success-color);
+      color: white;
+      padding: 20px;
+      border-radius: 12px;
+      margin-top: 20px;
+      text-align: center;
+      animation: fadeIn 0.5s ease;
+    }
+
+    .feedback-success i {
+      font-size: 2rem;
+      margin-bottom: 10px;
+    }
+
+    .feedback-success h4 {
+      margin: 10px 0 5px 0;
+      font-size: 1.3rem;
+    }
+
+    .feedback-success p {
+      margin: 0;
+      opacity: 0.9;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ===== BUTTONS ===== */
+    .buttons {
+      margin-top: 40px;
+      display: flex;
+      gap: 15px;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      flex: 1;
+      min-width: 200px;
+      padding: 15px 25px;
+      font-size: 1rem;
+      border-radius: 12px;
+      font-family: 'Poppins', sans-serif;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      border: none;
+      text-decoration: none;
+    }
+
+    .edit-btn {
+      border: 2px solid var(--primary-color);
+      color: var(--primary-color);
+      background: transparent;
+    }
+
+    .edit-btn:hover {
+      background: var(--primary-color);
+      color: white;
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(6, 182, 212, 0.3);
+    }
+
+    .save-btn {
+      background: var(--primary-color);
+      color: white;
+      border: 2px solid var(--primary-color);
+      display: none;
+    }
+
+    .save-btn:hover {
+      background: var(--primary-dark);
+      border-color: var(--primary-dark);
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(6, 182, 212, 0.3);
+    }
+
+    .back-btn {
+      background: #f1f5f9;
+      color: var(--text-muted);
+      border: 2px solid #e2e8f0;
+      text-decoration: none;
+    }
+
+    .back-btn:hover {
+      background: #e2e8f0;
+      color: #092233;
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(0,0,0,0.1);
+    }
+
+    /* Alert for unauthorized access */
+    .alert {
+      padding: 0.8rem 1rem;
+      border-radius: 8px;
+      margin-bottom: 1.5rem;
+      text-align: center;
+    }
+    .alert-error {
+      background: #fed7d7;
+      color: var(--error);
+      border: 1px solid #feb2b2;
+    }
+  </style>
+</head>
+
+<body>
+  <!-- Navbar -->
+  <header class="navbar">
+    <div class="logo"><span>Habit Tracker</span></div>
+  </header>
+
+  <!-- Main Content -->
+  <div class="main-content">
+    <div class="profile-container">
+      <div class="profile-header">
+        <div class="profile-pic-wrapper">
+          <img src="user.png" id="profilePic" alt="Profile Picture" class="profile-pic">
+          <button class="edit-pic-btn" id="editPicBtn"><i class="fas fa-camera"></i></button>
+          <input type="file" id="uploadPic" accept="image/*">
+        </div>
+        <h1 class="profile-title" id="displayName">User Name</h1>
+        <p class="profile-subtitle" id="userPassion">Passion</p>
+      </div>
+
+      <div class="info-section">
+        <div class="info-row">
+          <div class="info-label"><i class="fas fa-user"></i>Username:</div>
+          <div class="info-value"><span id="usernameValue">username</span></div>
+        </div>
+        <div class="info-row">
+          <div class="info-label"><i class="fas fa-id-card"></i>Full Name:</div>
+          <div class="info-value"><span id="fullNameValue">Full Name</span></div>
+        </div>
+        <div class="info-row">
+          <div class="info-label"><i class="fas fa-birthday-cake"></i>Date of Birth:</div>
+          <div class="info-value"><span id="dobValue">Not set</span></div>
+        </div>
+        <div class="info-row">
+          <div class="info-label"><i class="fas fa-heart"></i>Passion:</div>
+          <div class="info-value"><span id="passionValue">Not set</span></div>
+        </div>
+        <div class="info-row">
+          <div class="info-label"><i class="fas fa-envelope"></i>Email:</div>
+          <div class="info-value"><span id="emailValue">email@example.com</span></div>
+        </div>
+        <div class="info-row">
+          <div class="info-label"><i class="fas fa-phone"></i>Phone:</div>
+          <div class="info-value"><span id="phoneValue">Not set</span></div>
+        </div>
+      </div>
+
+      <!-- Feedback Section -->
+      <div class="feedback-section">
+        <h3 class="feedback-title"><i class="fas fa-comment-dots"></i> Send Feedback</h3>
+        <form class="feedback-form" id="feedbackForm">
+          <div class="form-group">
+            <label for="feedbackType">Feedback Type:</label>
+            <select id="feedbackType" required>
+              <option value="">Select feedback type</option>
+              <option value="bug">Bug Report</option>
+              <option value="feature">Feature Request</option>
+              <option value="improvement">Improvement Suggestion</option>
+              <option value="general">General Feedback</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="feedbackMessage">Your Feedback:</label>
+            <textarea id="feedbackMessage" placeholder="Tell us what you think about GrowTrack..." required></textarea>
+          </div>
+          <button type="submit" class="submit-feedback">
+            <i class="fas fa-paper-plane"></i> Submit Feedback
+          </button>
+        </form>
+        
+        <!-- Success Message -->
+        <div class="feedback-success" id="feedbackSuccess">
+          <i class="fas fa-check-circle"></i>
+          <h4>Thank You for Your Feedback!</h4>
+          <p id="successMessage">Your feedback will be very helpful for us to improve GrowTrack.</p>
+        </div>
+      </div>
+
+      <div class="buttons">
+        <button class="btn edit-btn" id="editBtn"><i class="fas fa-edit"></i> Edit Profile</button>
+        <button class="btn save-btn" id="saveBtn"><i class="fas fa-save"></i> Save Changes</button>
+        <a href="dashboard.html" class="btn back-btn"><i class="fas fa-arrow-left"></i> Back to Dashboard</a>
+      </div>
+    </div>
+  </div>
+
+  <script>
+  // ===== API CONFIGURATION =====
+  const API_BASE = 'https://habit-tracker-wsv3.onrender.com';
+  let currentUser = null;
+  let userProfile = null;
+
+  // ===== API FUNCTIONS =====
+  async function apiRequest(endpoint, options = {}) {
+    const url = `${API_BASE}${endpoint}`;
+    try {
+      const response = await fetch(url, {
+        headers: { "Content-Type": "application/json", ...(options.headers || {}) },
+        ...options
+      });
+      if (!response.ok) throw new Error(`HTTP ${response.status}`);
+      const contentType = response.headers.get("content-type") || "";
+      if (!contentType.includes("application/json")) return null;
+      return await response.json();
+    } catch (err) {
+      console.warn("apiRequest failed:", err.message);
+      throw err;
+    }
+  }
+
+  // ===== LOAD USER DATA FROM BACKEND =====
+  async function loadUserData() {
+    // Get current logged in user from localStorage (set by login.html)
+    const currentUserData = localStorage.getItem('growtrackCurrentUser');
+    
+    if (!currentUserData) {
+      window.location.href = 'login.html';
+      return;
+    }
+
+    currentUser = JSON.parse(currentUserData);
+    
+    if (!currentUser || !currentUser.id) {
+      window.location.href = 'login.html';
+      return;
+    }
+    
+    try {
+      // Try to fetch profile from backend
+      const profile = await apiRequest(`/api/profile?userId=${currentUser.id}`);
+      
+      if (profile) {
+        userProfile = profile;
+        // Update UI with profile data
+        const fullName = profile.fullName || currentUser.username;
+        const passion = profile.passion || 'Not set';
+        const dob = profile.dob || 'Not set';
+        const phone = profile.phone || 'Not set';
+        const profilePic = profile.profilePic || 'user.png';
+
+        document.getElementById('displayName').textContent = fullName;
+        document.getElementById('userPassion').textContent = passion;
+        document.getElementById('usernameValue').textContent = currentUser.username;
+        document.getElementById('fullNameValue').textContent = fullName;
+        document.getElementById('dobValue').textContent = dob;
+        document.getElementById('passionValue').textContent = passion;
+        document.getElementById('emailValue').textContent = currentUser.email || 'No email';
+        document.getElementById('phoneValue').textContent = phone;
+        document.getElementById('profilePic').src = profilePic;
+      } else {
+        // No profile exists yet, show default values
+        document.getElementById('displayName').textContent = currentUser.username;
+        document.getElementById('userPassion').textContent = 'Not set';
+        document.getElementById('usernameValue').textContent = currentUser.username;
+        document.getElementById('fullNameValue').textContent = currentUser.username;
+        document.getElementById('dobValue').textContent = 'Not set';
+        document.getElementById('passionValue').textContent = 'Not set';
+        document.getElementById('emailValue').textContent = currentUser.email || 'No email';
+        document.getElementById('phoneValue').textContent = 'Not set';
+        document.getElementById('profilePic').src = 'user.png';
+      }
+    } catch (err) {
+      console.error('Failed to load profile:', err);
+      // Fallback to localStorage
+      let savedProfile = JSON.parse(localStorage.getItem('growtrackUserProfile') || '{}');
+      
+      const fullName = savedProfile.fullName || currentUser.username;
+      const passion = savedProfile.passion || 'Not set';
+      const dob = savedProfile.dob || 'Not set';
+      const phone = savedProfile.phone || 'Not set';
+      const profilePic = savedProfile.profilePic || 'user.png';
+
+      document.getElementById('displayName').textContent = fullName;
+      document.getElementById('userPassion').textContent = passion;
+      document.getElementById('usernameValue').textContent = currentUser.username;
+      document.getElementById('fullNameValue').textContent = fullName;
+      document.getElementById('dobValue').textContent = dob;
+      document.getElementById('passionValue').textContent = passion;
+      document.getElementById('emailValue').textContent = currentUser.email || 'No email';
+      document.getElementById('phoneValue').textContent = phone;
+      document.getElementById('profilePic').src = profilePic;
+    }
+  }
+
+  // ===== SAVE PROFILE TO BACKEND =====
+  async function saveProfileToBackend(profileData) {
+    if (!currentUser || !currentUser.id) return;
+    
+    const payload = {
+      userId: currentUser.id,
+      username: currentUser.username,
+      email: currentUser.email,
+      ...profileData
+    };
+    
+    try {
+      const result = await apiRequest('/api/profile', {
+        method: 'POST',
+        body: JSON.stringify(payload)
+      });
+      return result;
+    } catch (err) {
+      console.error('Failed to save profile to backend:', err);
+      return null;
+    }
+  }
+
+  // ===== Edit/Save functionality =====
+  const editBtn = document.getElementById('editBtn');
+  const saveBtn = document.getElementById('saveBtn');
+  let editMode = false;
+
+  editBtn.addEventListener('click', () => {
+    if (editMode) return;
+    
+    // Convert display spans to input fields
+    const fullNameSpan = document.getElementById('fullNameValue');
+    const dobSpan = document.getElementById('dobValue');
+    const passionSpan = document.getElementById('passionValue');
+    const phoneSpan = document.getElementById('phoneValue');
+    
+    // Store original values
+    const fullNameValue = fullNameSpan.textContent;
+    const dobValue = dobSpan.textContent;
+    const passionValue = passionSpan.textContent;
+    const phoneValue = phoneSpan.textContent;
+    
+    // Create input elements
+    const fullNameInput = document.createElement('input');
+    fullNameInput.value = fullNameValue;
+    fullNameInput.id = 'fullNameInput';
+    
+    const dobInput = document.createElement('input');
+    dobInput.type = 'date';
+    dobInput.value = dobValue !== 'Not set' ? dobValue : '';
+    dobInput.id = 'dobInput';
+    
+    const passionInput = document.createElement('input');
+    passionInput.value = passionValue;
+    passionInput.id = 'passionInput';
+    
+    const phoneInput = document.createElement('input');
+    phoneInput.type = 'tel';
+    phoneInput.value = phoneValue !== 'Not set' ? phoneValue : '';
+    phoneInput.id = 'phoneInput';
+    
+    // Replace spans with inputs
+    fullNameSpan.innerHTML = '';
+    fullNameSpan.appendChild(fullNameInput);
+    
+    dobSpan.innerHTML = '';
+    dobSpan.appendChild(dobInput);
+    
+    passionSpan.innerHTML = '';
+    passionSpan.appendChild(passionInput);
+    
+    phoneSpan.innerHTML = '';
+    phoneSpan.appendChild(phoneInput);
+    
+    editBtn.style.display = 'none';
+    saveBtn.style.display = 'flex';
+    editMode = true;
+  });
+
+  saveBtn.addEventListener('click', async () => {
+    // Get values from inputs
+    const fullNameInput = document.getElementById('fullNameInput');
+    const dobInput = document.getElementById('dobInput');
+    const passionInput = document.getElementById('passionInput');
+    const phoneInput = document.getElementById('phoneInput');
+    
+    const newFullName = fullNameInput ? fullNameInput.value : document.getElementById('fullNameValue').textContent;
+    const newDob = dobInput ? dobInput.value : 'Not set';
+    const newPassion = passionInput ? passionInput.value : 'Not set';
+    const newPhone = phoneInput ? phoneInput.value : 'Not set';
+    const profilePic = document.getElementById('profilePic').src;
+    
+    const profileData = {
+      fullName: newFullName || 'Not set',
+      dob: newDob || 'Not set',
+      passion: newPassion || 'Not set',
+      phone: newPhone || 'Not set',
+      profilePic: profilePic
+    };
+    
+    // Save to backend
+    await saveProfileToBackend(profileData);
+    
+    // Also save to localStorage as fallback
+    const userProfileData = {
+      username: currentUser.username,
+      ...profileData
+    };
+    localStorage.setItem('growtrackUserProfile', JSON.stringify(userProfileData));
+    
+    // Update display spans
+    document.getElementById('fullNameValue').textContent = profileData.fullName;
+    document.getElementById('dobValue').textContent = profileData.dob;
+    document.getElementById('passionValue').textContent = profileData.passion;
+    document.getElementById('phoneValue').textContent = profileData.phone;
+    
+    // Update header
+    document.getElementById('displayName').textContent = profileData.fullName;
+    document.getElementById('userPassion').textContent = profileData.passion;
+    
+    editBtn.style.display = 'flex';
+    saveBtn.style.display = 'none';
+    editMode = false;
+    
+    // Show success message
+    showSuccessMessage('Profile updated successfully!');
+  });
+
+  function showSuccessMessage(message) {
+    const successMsg = document.createElement('div');
+    successMsg.style.cssText = 'position:fixed;top:20px;right:20px;background:#10b981;color:white;padding:12px 20px;border-radius:10px;z-index:9999;animation:fadeIn 0.3s ease';
+    successMsg.innerHTML = `<i class="fas fa-check-circle"></i> ${message}`;
+    document.body.appendChild(successMsg);
+    setTimeout(() => successMsg.remove(), 2000);
+  }
+
+  // ===== Profile Picture upload =====
+  const editPicBtn = document.getElementById('editPicBtn');
+  const uploadPic = document.getElementById('uploadPic');
+  const profilePic = document.getElementById('profilePic');
+
+  editPicBtn.addEventListener('click', () => uploadPic.click());
+
+  uploadPic.addEventListener('change', async (event) => {
+    const file = event.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = async () => {
+        const profilePicData = reader.result;
+        profilePic.src = profilePicData;
+        
+        // Save to backend
+        await saveProfileToBackend({
+          fullName: document.getElementById('fullNameValue').textContent,
+          dob: document.getElementById('dobValue').textContent,
+          passion: document.getElementById('passionValue').textContent,
+          phone: document.getElementById('phoneValue').textContent,
+          profilePic: profilePicData
+        });
+        
+        showSuccessMessage('Profile picture updated!');
+      };
+      reader.readAsDataURL(file);
+    }
+  });
+
+  // ===== Feedback form submission =====
+  document.getElementById('feedbackForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    
+    const feedbackType = document.getElementById('feedbackType').value;
+    const feedbackMessage = document.getElementById('feedbackMessage').value;
+    const userName = currentUser?.username || 'User';
+    
+    // Save feedback to localStorage
+    const feedback = {
+      type: feedbackType,
+      message: feedbackMessage,
+      timestamp: new Date().toISOString(),
+      user: userName,
+      userId: currentUser?.id
+    };
+    
+    const allFeedback = JSON.parse(localStorage.getItem('growtrackFeedback') || '[]');
+    allFeedback.push(feedback);
+    localStorage.setItem('growtrackFeedback', JSON.stringify(allFeedback));
+    
+    // Show personalized success message
+    const successMessage = document.getElementById('successMessage');
+    successMessage.textContent = `Thank you for your feedback, ${userName}! We appreciate your input.`;
+    
+    // Show success message and hide form
+    document.getElementById('feedbackSuccess').style.display = 'block';
+    this.style.display = 'none';
+    
+    // Reset form after 3 seconds and show it again
+    setTimeout(() => {
+      this.reset();
+      this.style.display = 'flex';
+      document.getElementById('feedbackSuccess').style.display = 'none';
+    }, 3000);
+  });
+
+  // ===== Initialize =====
+  window.addEventListener('load', () => {
+    const isLoggedIn = localStorage.getItem('growtrackLoggedIn');
+    if (!isLoggedIn) {
+      window.location.href = 'login.html';
+      return;
+    }
+    loadUserData();
+  });
+</script>
+</body>
+</html>

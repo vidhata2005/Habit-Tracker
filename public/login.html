@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Login - Habit Tracker</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --teal: #06b6d4;
+      --teal-dark: #028aa5;
+      --bg: #f7fbfc;
+      --muted: #556170;
+      --white: #ffffff;
+      --nav-height: 72px;
+      --error: #e53e3e;
+      --success: #38a169;
+    }
+
+    body, html {
+      margin: 0;
+      padding: 0;
+      font-family: 'Poppins', sans-serif;
+      background: var(--bg);
+      color: #092233;
+    }
+
+    /* NAVBAR */
+    .navbar {
+      height: var(--nav-height);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 1.5rem;
+      background: #ffffffcc;
+      backdrop-filter: blur(6px);
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+      position: sticky;
+      top: 0;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-weight: 700;
+      color: var(--teal-dark);
+      font-size: 2rem;
+    }
+
+    .logo span { 
+      color: #073642; 
+    }
+
+    nav ul {
+      list-style: none;
+      display: flex;
+      gap: 1rem;
+      margin: 0;
+      padding: 0;
+      align-items: center;
+    }
+
+    nav a.link {
+      text-decoration: none;
+      font-weight: 600;
+      color: #333;
+      transition: color 0.3s;
+    }
+    nav a.link:hover { color: var(--teal-dark); }
+
+    .btn-nav {
+      padding: 0.5rem 1rem;
+      border-radius: 8px;
+      font-weight: 600;
+      text-decoration: none;
+      transition: all 0.3s;
+      font-size: 0.95rem;
+    }
+    .btn-signup {
+      background: var(--teal);
+      color: var(--white);
+      border: 2px solid var(--teal);
+    }
+    .btn-signup:hover {
+      background: var(--teal-dark);
+    }
+
+    /* LOGIN FORM */
+    .login-container {
+      min-height: calc(100vh - var(--nav-height));
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      padding: 2rem;
+    }
+
+    .login-box {
+      background: var(--white);
+      padding: 2.5rem;
+      border-radius: 12px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+      width: 100%;
+      max-width: 400px;
+    }
+
+    .login-box h1 {
+      font-size: 2rem;
+      margin-bottom: 0.5rem;
+      color: #073642;
+      text-align: center;
+    }
+
+    .subtitle {
+      color: var(--muted);
+      margin-bottom: 2rem;
+      text-align: center;
+    }
+
+    .form-group {
+      margin-bottom: 1.5rem;
+      position: relative;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 0.5rem;
+      font-weight: 600;
+      color: #333;
+    }
+
+    .password-wrapper {
+      position: relative;
+      display: flex;
+      align-items: center;
+    }
+
+    input {
+      width: 100%;
+      padding: 0.9rem;
+      border: 2px solid #ddd;
+      border-radius: 8px;
+      font-size: 1rem;
+      box-sizing: border-box;
+      transition: border-color 0.3s;
+    }
+
+    input:focus {
+      outline: none;
+      border-color: var(--teal);
+    }
+
+    /* Show password row - LEFT aligned, clean text */
+    .show-password-row {
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
+      gap: 0.6rem;
+      margin-top: 0.6rem;
+      font-size: 0.85rem;
+      color: var(--muted);
+      cursor: pointer;
+    }
+
+    .show-password-row input {
+      width: auto;
+      margin: 0;
+      padding: 0;
+      transform: scale(1.05);
+      cursor: pointer;
+      accent-color: var(--teal);
+    }
+
+    .show-password-row label {
+      display: inline;
+      margin: 0;
+      font-weight: 500;
+      cursor: pointer;
+      font-size: 0.85rem;
+      color: #44505c;
+    }
+
+    /* Forgot password link row */
+    .forgot-row {
+      display: flex;
+      justify-content: flex-end;
+      margin-top: 0.4rem;
+    }
+    .forgot-link {
+      font-size: 0.8rem;
+      color: var(--teal);
+      text-decoration: none;
+      font-weight: 500;
+      transition: color 0.2s;
+    }
+    .forgot-link:hover {
+      color: var(--teal-dark);
+      text-decoration: underline;
+    }
+
+    .btn-primary {
+      width: 100%;
+      padding: 0.9rem;
+      background: var(--teal);
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+
+    .btn-primary:hover {
+      background: var(--teal-dark);
+    }
+
+    .switch-auth {
+      text-align: center;
+      margin-top: 1.5rem;
+      color: var(--muted);
+    }
+
+    .switch-auth a {
+      color: var(--teal);
+      text-decoration: none;
+      font-weight: 600;
+    }
+
+    .switch-auth a:hover {
+      text-decoration: underline;
+    }
+
+    .error-message {
+      color: var(--error);
+      font-size: 0.85rem;
+      margin-top: 0.5rem;
+      display: none;
+    }
+
+    .alert {
+      padding: 0.8rem 1rem;
+      border-radius: 8px;
+      margin-bottom: 1.5rem;
+      display: none;
+    }
+
+    .alert-error {
+      background: #fed7d7;
+      color: var(--error);
+      border: 1px solid #feb2b2;
+    }
+
+    .alert-success {
+      background: #c6f6d5;
+      color: var(--success);
+      border: 1px solid #9ae6b4;
+    }
+
+    @media (max-width: 720px) {
+      .login-box {
+        padding: 2rem;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAVBAR -->
+<header class="navbar">
+  <div class="logo"><span>Habit Tracker</span></div>
+  <nav>
+    <ul>
+      <li><a class="link" href="index.html">Home</a></li>
+      <li><a class="link" href="product.html">Product</a></li>
+      <li><a href="signup.html" class="btn-nav btn-signup">Sign Up</a></li>
+    </ul>
+  </nav>
+</header>
+
+<!-- LOGIN FORM -->
+<section class="login-container">
+  <div class="login-box">
+    <h1>Welcome back</h1>
+    <p class="subtitle">Sign in to your account to continue</p>
+    
+    <div class="alert alert-error" id="networkError">
+      Network error. Please check your connection and try again.
+    </div>
+    
+    <div class="alert alert-success" id="successAlert">
+      Login successful! Redirecting to dashboard...
+    </div>
+    
+    <form id="loginForm">
+      <div class="form-group">
+        <label for="username">Username or Email</label>
+        <input type="text" id="username" name="username" placeholder="Enter your username or email" required>
+        <div class="error-message" id="usernameError"></div>
+      </div>
+      
+      <div class="form-group">
+        <label for="password">Password</label>
+        <div class="password-wrapper">
+          <input type="password" id="password" name="password" placeholder="Enter your password" required>
+        </div>
+        <div class="show-password-row">
+          <input type="checkbox" id="showPasswordCheckbox">
+          <label for="showPasswordCheckbox">Show password</label>
+        </div>
+        <div class="forgot-row">
+          <a href="forgot-password.html" class="forgot-link">Forgot password?</a>
+        </div>
+        <div class="error-message" id="passwordError"></div>
+      </div>
+      
+      <button type="submit" class="btn-primary" id="submitBtn">Sign In</button>
+    </form>
+    
+    <div class="switch-auth">
+      Don't have an account? <a href="signup.html">Sign up</a>
+    </div>
+  </div>
+</section>
+
+<script>
+  // ===== API CONFIGURATION =====
+  const API_BASE = 'https://habit-tracker-wsv3.onrender.com';
+
+  document.addEventListener('DOMContentLoaded', function() {
+    const loginForm = document.getElementById('loginForm');
+    const submitBtn = document.getElementById('submitBtn');
+    const passwordInput = document.getElementById('password');
+    const showPasswordCheck = document.getElementById('showPasswordCheckbox');
+    
+    // ========= TOGGLE PASSWORD VISIBILITY ==========
+    function togglePasswordVisibility(checkbox, inputField) {
+      if (checkbox.checked) {
+        inputField.type = 'text';
+      } else {
+        inputField.type = 'password';
+      }
+    }
+    
+    if (showPasswordCheck) {
+      showPasswordCheck.addEventListener('change', function() {
+        togglePasswordVisibility(showPasswordCheck, passwordInput);
+        passwordInput.focus();
+      });
+    }
+    
+    // Form submission handler
+    loginForm.addEventListener('submit', async function(e) {
+      e.preventDefault();
+      
+      const username = document.getElementById('username').value;
+      const password = passwordInput.value;
+      
+      // Clear previous errors
+      document.getElementById('usernameError').style.display = 'none';
+      document.getElementById('passwordError').style.display = 'none';
+      document.getElementById('networkError').style.display = 'none';
+      document.getElementById('successAlert').style.display = 'none';
+      
+      let isValid = true;
+      
+      // Basic validation
+      if (!username.trim()) {
+        document.getElementById('usernameError').textContent = 'Please enter your username or email';
+        document.getElementById('usernameError').style.display = 'block';
+        isValid = false;
+      }
+      
+      if (!password) {
+        document.getElementById('passwordError').textContent = 'Please enter your password';
+        document.getElementById('passwordError').style.display = 'block';
+        isValid = false;
+      }
+      
+      if (!isValid) return;
+      
+      // Disable submit button
+      submitBtn.disabled = true;
+      submitBtn.textContent = 'Signing In...';
+      
+      try {
+        // ✅ CORRECTED: Use /api/login endpoint
+        const response = await fetch(`${API_BASE}/api/login`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ username, password })
+        });
+
+        if (response.ok) {
+          const data = await response.json();
+          
+          // Store login session
+          localStorage.setItem('growtrackLoggedIn', 'true');
+          localStorage.setItem('growtrackCurrentUser', JSON.stringify({
+            id: data.user.id,
+            username: data.user.username,
+            email: data.user.email,
+            loginTime: new Date().toISOString()
+          }));
+          
+          // Also store user data for fallback
+          localStorage.setItem('growtrackUser', JSON.stringify({
+            id: data.user.id,
+            username: data.user.username,
+            email: data.user.email,
+            createdAt: new Date().toISOString()
+          }));
+          
+          // Show success message
+          document.getElementById('successAlert').style.display = 'block';
+          
+          // Clear the form and reset checkbox
+          loginForm.reset();
+          if (showPasswordCheck) showPasswordCheck.checked = false;
+          passwordInput.type = 'password';
+          
+          // Redirect to dashboard after 1.5 seconds
+          setTimeout(() => {
+            window.location.href = 'dashboard.html';
+          }, 1500);
+          
+        } else {
+          const errorData = await response.json();
+          
+          if (response.status === 401) {
+            document.getElementById('passwordError').textContent = 'Invalid username or password';
+            document.getElementById('passwordError').style.display = 'block';
+          } else {
+            document.getElementById('networkError').textContent = errorData.message || 'Login failed';
+            document.getElementById('networkError').style.display = 'block';
+          }
+          submitBtn.disabled = false;
+          submitBtn.textContent = 'Sign In';
+        }
+        
+      } catch (error) {
+        console.error('Login error:', error);
+        document.getElementById('networkError').textContent = 'Network error. Please check your connection and try again.';
+        document.getElementById('networkError').style.display = 'block';
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Sign In';
+      }
+    });
+  });
+</script>
+</body>
+</html>

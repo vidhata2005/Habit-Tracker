@@ -1,0 +1,662 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Sign Up - GrowTrack | Show password</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --teal: #06b6d4;
+      --teal-dark: #028aa5;
+      --bg: #f7fbfc;
+      --muted: #556170;
+      --white: #ffffff;
+      --nav-height: 72px;
+      --error: #e53e3e;
+      --success: #38a169;
+    }
+
+    body, html {
+      margin: 0;
+      padding: 0;
+      font-family: 'Poppins', sans-serif;
+      background: var(--bg);
+      color: #092233;
+    }
+
+    /* NAVBAR */
+    .navbar {
+      height: var(--nav-height);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 1.5rem;
+      background: #ffffffcc;
+      backdrop-filter: blur(6px);
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+      position: sticky;
+      top: 0;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-weight: 700;
+      color: var(--teal-dark);
+      font-size: 2rem;
+    }
+
+    .logo span { 
+      color: #073642; 
+    }
+
+    nav ul {
+      list-style: none;
+      display: flex;
+      gap: 1rem;
+      margin: 0;
+      padding: 0;
+      align-items: center;
+    }
+
+    nav a.link {
+      text-decoration: none;
+      font-weight: 600;
+      color: #333;
+      transition: color 0.3s;
+    }
+    nav a.link:hover { color: var(--teal-dark); }
+
+    .btn-nav {
+      padding: 0.5rem 1rem;
+      border-radius: 8px;
+      font-weight: 600;
+      text-decoration: none;
+      transition: all 0.3s;
+      font-size: 0.95rem;
+    }
+    .btn-login {
+      border: 2px solid var(--teal);
+      color: var(--teal-dark);
+    }
+    .btn-login:hover {
+      background: var(--teal);
+      color: var(--white);
+    }
+
+    /* SIGNUP FORM */
+    .signup-container {
+      min-height: calc(100vh - var(--nav-height));
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      padding: 2rem;
+    }
+
+    .signup-box {
+      background: var(--white);
+      padding: 2.5rem;
+      border-radius: 12px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+      width: 100%;
+      max-width: 400px;
+    }
+
+    .signup-box h1 {
+      font-size: 2rem;
+      margin-bottom: 0.5rem;
+      color: #073642;
+      text-align: center;
+    }
+
+    .subtitle {
+      color: var(--muted);
+      margin-bottom: 2rem;
+      text-align: center;
+    }
+
+    .form-group {
+      margin-bottom: 1.5rem;
+      position: relative;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 0.5rem;
+      font-weight: 600;
+      color: #333;
+    }
+
+    .password-wrapper {
+      position: relative;
+      display: flex;
+      align-items: center;
+    }
+
+    input {
+      width: 100%;
+      padding: 0.9rem;
+      border: 2px solid #ddd;
+      border-radius: 8px;
+      font-size: 1rem;
+      box-sizing: border-box;
+      transition: border-color 0.3s;
+    }
+
+    input:focus {
+      outline: none;
+      border-color: var(--teal);
+    }
+
+    /* Show password row - LEFT aligned with no emoji */
+    .show-password-row {
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
+      gap: 0.6rem;
+      margin-top: 0.6rem;
+      font-size: 0.85rem;
+      color: var(--muted);
+      cursor: pointer;
+    }
+
+    .show-password-row input {
+      width: auto;
+      margin: 0;
+      padding: 0;
+      transform: scale(1.05);
+      cursor: pointer;
+      accent-color: var(--teal);
+    }
+
+    .show-password-row label {
+      display: inline;
+      margin: 0;
+      font-weight: 500;
+      cursor: pointer;
+      font-size: 0.85rem;
+      color: #44505c;
+      letter-spacing: 0.3px;
+    }
+
+    .btn-primary {
+      width: 100%;
+      padding: 0.9rem;
+      background: var(--teal);
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+
+    .btn-primary:hover {
+      background: var(--teal-dark);
+    }
+
+    .switch-auth {
+      text-align: center;
+      margin-top: 1.5rem;
+      color: var(--muted);
+    }
+
+    .switch-auth a {
+      color: var(--teal);
+      text-decoration: none;
+      font-weight: 600;
+    }
+
+    .switch-auth a:hover {
+      text-decoration: underline;
+    }
+
+    .error-message {
+      color: var(--error);
+      font-size: 0.85rem;
+      margin-top: 0.5rem;
+      display: none;
+    }
+
+    .alert {
+      padding: 0.8rem 1rem;
+      border-radius: 8px;
+      margin-bottom: 1.5rem;
+      display: none;
+    }
+
+    .alert-error {
+      background: #fed7d7;
+      color: var(--error);
+      border: 1px solid #feb2b2;
+    }
+
+    .alert-success {
+      background: #c6f6d5;
+      color: var(--success);
+      border: 1px solid #9ae6b4;
+    }
+
+    .password-requirements {
+      font-size: 0.75rem;
+      color: var(--muted);
+      margin-top: 0.7rem;
+      background: #f0f7fa;
+      padding: 0.6rem 0.8rem;
+      border-radius: 10px;
+    }
+
+    .requirement {
+      display: flex;
+      align-items: center;
+      margin-bottom: 0.2rem;
+    }
+
+    .requirement.met {
+      color: var(--success);
+    }
+
+    .requirement.unmet {
+      color: var(--muted);
+    }
+
+    .checkmark {
+      margin-right: 0.5rem;
+      font-size: 0.9rem;
+    }
+
+    @media (max-width: 720px) {
+      .signup-box {
+        padding: 2rem;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAVBAR -->
+<header class="navbar">
+  <div class="logo"><span>Habit Tracker</span></div>
+  <nav>
+    <ul>
+      <li><a class="link" href="index.html">Home</a></li>
+      <li><a class="link" href="product.html">Product</a></li>
+      <li><a href="login.html" class="btn-nav btn-login">Login</a></li>
+    </ul>
+  </nav>
+</header>
+
+<!-- SIGNUP FORM -->
+<section class="signup-container">
+  <div class="signup-box">
+    <h1>Create Account</h1>
+    <p class="subtitle">Join thousands building better habits</p>
+    
+    <div class="alert alert-error" id="networkError">
+      Network error. Please check your connection and try again.
+    </div>
+    
+    <div class="alert alert-success" id="successAlert">
+      Account created successfully! Redirecting to login...
+    </div>
+    
+    <form id="signupForm">
+      <div class="form-group">
+        <label for="username">Username</label>
+        <input type="text" id="username" name="username" placeholder="Choose a username" required>
+        <div class="error-message" id="usernameError"></div>
+      </div>
+      
+      <div class="form-group">
+        <label for="email">Email</label>
+        <input type="email" id="email" name="email" placeholder="Enter your email" required>
+        <div class="error-message" id="emailError"></div>
+      </div>
+      
+      <!-- PASSWORD FIELD with show/hide checkbox (left aligned, no emoji) -->
+      <div class="form-group">
+        <label for="password">Password</label>
+        <div class="password-wrapper">
+          <input type="password" id="password" name="password" placeholder="Create a password" required>
+        </div>
+        <div class="show-password-row">
+          <input type="checkbox" id="showPasswordCheckbox">
+          <label for="showPasswordCheckbox">Show password</label>
+        </div>
+        <div class="error-message" id="passwordError"></div>
+        
+        <div class="password-requirements">
+          <div class="requirement unmet" id="lengthReq">
+            <span class="checkmark">○</span> At least 8 characters
+          </div>
+          <div class="requirement unmet" id="numberReq">
+            <span class="checkmark">○</span> Contains a number
+          </div>
+          <div class="requirement unmet" id="specialReq">
+            <span class="checkmark">○</span> Contains a special character
+          </div>
+        </div>
+      </div>
+      
+      <!-- CONFIRM PASSWORD FIELD with show/hide (left aligned, no emoji) -->
+      <div class="form-group">
+        <label for="confirmPassword">Confirm Password</label>
+        <div class="password-wrapper">
+          <input type="password" id="confirmPassword" name="confirmPassword" placeholder="Confirm your password" required>
+        </div>
+        <div class="show-password-row">
+          <input type="checkbox" id="showConfirmCheckbox">
+          <label for="showConfirmCheckbox">Show confirm password</label>
+        </div>
+        <div class="error-message" id="confirmPasswordError"></div>
+      </div>
+      
+      <button type="submit" class="btn-primary" id="submitBtn">Create Account</button>
+    </form>
+    
+    <div class="switch-auth">
+      Already have an account? <a href="login.html">Login</a>
+    </div>
+  </div>
+</section>
+
+<script>
+  // API Base URL - Update this with your Render backend URL
+  const API_BASE = 'https://habit-tracker-wsv3.onrender.com';
+
+  document.addEventListener('DOMContentLoaded', function() {
+    const signupForm = document.getElementById('signupForm');
+    const passwordInput = document.getElementById('password');
+    const confirmPasswordInput = document.getElementById('confirmPassword');
+    const submitBtn = document.getElementById('submitBtn');
+    
+    // Show/hide checkboxes
+    const showPasswordCheck = document.getElementById('showPasswordCheckbox');
+    const showConfirmCheck = document.getElementById('showConfirmCheckbox');
+    
+    // Password validation requirements
+    const requirements = {
+      length: document.getElementById('lengthReq'),
+      number: document.getElementById('numberReq'),
+      special: document.getElementById('specialReq')
+    };
+    
+    // ========= TOGGLE PASSWORD VISIBILITY ==========
+    function togglePasswordVisibility(checkbox, inputField) {
+      if (checkbox.checked) {
+        inputField.type = 'text';
+      } else {
+        inputField.type = 'password';
+      }
+    }
+    
+    // Attach event listeners for password visibility
+    if (showPasswordCheck) {
+      showPasswordCheck.addEventListener('change', function() {
+        togglePasswordVisibility(showPasswordCheck, passwordInput);
+        passwordInput.focus();
+      });
+    }
+    
+    if (showConfirmCheck) {
+      showConfirmCheck.addEventListener('change', function() {
+        togglePasswordVisibility(showConfirmCheck, confirmPasswordInput);
+        confirmPasswordInput.focus();
+      });
+    }
+    
+    // Real-time password validation & strength indicator
+    passwordInput.addEventListener('input', function() {
+      const password = passwordInput.value;
+      
+      // Length check
+      if (password.length >= 8) {
+        requirements.length.classList.add('met');
+        requirements.length.classList.remove('unmet');
+        requirements.length.querySelector('.checkmark').textContent = '✓';
+      } else {
+        requirements.length.classList.add('unmet');
+        requirements.length.classList.remove('met');
+        requirements.length.querySelector('.checkmark').textContent = '○';
+      }
+      
+      // Number check
+      if (/\d/.test(password)) {
+        requirements.number.classList.add('met');
+        requirements.number.classList.remove('unmet');
+        requirements.number.querySelector('.checkmark').textContent = '✓';
+      } else {
+        requirements.number.classList.add('unmet');
+        requirements.number.classList.remove('met');
+        requirements.number.querySelector('.checkmark').textContent = '○';
+      }
+      
+      // Special character check
+      if (/[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(password)) {
+        requirements.special.classList.add('met');
+        requirements.special.classList.remove('unmet');
+        requirements.special.querySelector('.checkmark').textContent = '✓';
+      } else {
+        requirements.special.classList.add('unmet');
+        requirements.special.classList.remove('met');
+        requirements.special.querySelector('.checkmark').textContent = '○';
+      }
+      
+      // Real-time confirm password match validation
+      if (confirmPasswordInput.value.length > 0) {
+        const confirmErrorDiv = document.getElementById('confirmPasswordError');
+        if (password !== confirmPasswordInput.value) {
+          confirmErrorDiv.textContent = 'Passwords do not match';
+          confirmErrorDiv.style.display = 'block';
+        } else {
+          confirmErrorDiv.style.display = 'none';
+        }
+      } else {
+        document.getElementById('confirmPasswordError').style.display = 'none';
+      }
+    });
+    
+    // Real-time confirm password match while typing
+    confirmPasswordInput.addEventListener('input', function() {
+      const password = passwordInput.value;
+      const confirm = confirmPasswordInput.value;
+      const confirmErrorDiv = document.getElementById('confirmPasswordError');
+      
+      if (password !== confirm) {
+        confirmErrorDiv.textContent = 'Passwords do not match';
+        confirmErrorDiv.style.display = 'block';
+      } else {
+        confirmErrorDiv.style.display = 'none';
+      }
+    });
+    
+    // Helper to reset form and password visibility flags
+    function resetFormAndCheckboxes() {
+      signupForm.reset();
+      if (showPasswordCheck) showPasswordCheck.checked = false;
+      if (showConfirmCheck) showConfirmCheck.checked = false;
+      // Reset input types back to password for security
+      if (passwordInput) passwordInput.type = 'password';
+      if (confirmPasswordInput) confirmPasswordInput.type = 'password';
+      
+      // Reset password requirement visual state
+      Object.values(requirements).forEach(req => {
+        req.classList.add('unmet');
+        req.classList.remove('met');
+        const markSpan = req.querySelector('.checkmark');
+        if (markSpan) markSpan.textContent = '○';
+      });
+    }
+    
+    // Form submission handler
+    signupForm.addEventListener('submit', async function(e) {
+      e.preventDefault();
+      
+      const username = document.getElementById('username').value.trim();
+      const email = document.getElementById('email').value.trim();
+      const password = passwordInput.value;
+      const confirmPassword = confirmPasswordInput.value;
+      
+      // Clear previous errors & alerts
+      document.getElementById('usernameError').style.display = 'none';
+      document.getElementById('emailError').style.display = 'none';
+      document.getElementById('passwordError').style.display = 'none';
+      document.getElementById('confirmPasswordError').style.display = 'none';
+      document.getElementById('networkError').style.display = 'none';
+      document.getElementById('successAlert').style.display = 'none';
+      
+      let isValid = true;
+      
+      // Username validation
+      if (username.length < 3) {
+        document.getElementById('usernameError').textContent = 'Username must be at least 3 characters';
+        document.getElementById('usernameError').style.display = 'block';
+        isValid = false;
+      } else if (!/^[a-zA-Z0-9_\-\.]+$/.test(username)) {
+        document.getElementById('usernameError').textContent = 'Only letters, numbers, underscores, dots and hyphens allowed';
+        document.getElementById('usernameError').style.display = 'block';
+        isValid = false;
+      }
+      
+      // Email validation
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailRegex.test(email)) {
+        document.getElementById('emailError').textContent = 'Please enter a valid email address';
+        document.getElementById('emailError').style.display = 'block';
+        isValid = false;
+      }
+      
+      // Password validation
+      if (password.length < 8) {
+        document.getElementById('passwordError').textContent = 'Password must be at least 8 characters';
+        document.getElementById('passwordError').style.display = 'block';
+        isValid = false;
+      } else if (!/\d/.test(password)) {
+        document.getElementById('passwordError').textContent = 'Password must contain at least one number';
+        document.getElementById('passwordError').style.display = 'block';
+        isValid = false;
+      } else if (!/[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(password)) {
+        document.getElementById('passwordError').textContent = 'Password must contain at least one special character';
+        document.getElementById('passwordError').style.display = 'block';
+        isValid = false;
+      }
+      
+      // Confirm password validation
+      if (password !== confirmPassword) {
+        document.getElementById('confirmPasswordError').textContent = 'Passwords do not match';
+        document.getElementById('confirmPasswordError').style.display = 'block';
+        isValid = false;
+      }
+      
+      if (!isValid) return;
+      
+      // Disable submit button to prevent multiple submissions
+      submitBtn.disabled = true;
+      submitBtn.textContent = 'Creating Account...';
+      
+      try {
+        // API signup call to Render backend
+        const response = await fetch(`${API_BASE}/api/signup`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ username, email, password })
+        });
+
+        if (response.ok) {
+          const data = await response.json();
+          
+          // Store user data
+          const userData = {
+            id: data.user?.id || Date.now(),
+            username: data.user?.username || username,
+            email: data.user?.email || email,
+            createdAt: new Date().toISOString()
+          };
+          
+          localStorage.setItem('habitTrackerUser', JSON.stringify(userData));
+          
+          // Maintain users list
+          let allUsers = JSON.parse(localStorage.getItem('habitTrackerUsers')) || [];
+          const existingIndex = allUsers.findIndex(u => u.email === email);
+          if (existingIndex === -1) {
+            allUsers.push(userData);
+            localStorage.setItem('habitTrackerUsers', JSON.stringify(allUsers));
+          }
+          
+          // Show success message
+          const successAlert = document.getElementById('successAlert');
+          successAlert.style.display = 'block';
+          
+          // Reset form and checkbox states
+          resetFormAndCheckboxes();
+          
+          // Redirect to login page after 2 seconds
+          setTimeout(() => {
+            window.location.href = 'login.html';
+          }, 2000);
+          
+        } else {
+          const errorData = await response.json();
+          throw new Error(errorData.message || 'Signup failed');
+        }
+        
+      } catch (error) {
+        console.error('Signup error:', error);
+        
+        // Fallback to localStorage only signup
+        try {
+          // Check for duplicate email in localStorage
+          const existingUsers = JSON.parse(localStorage.getItem('habitTrackerUsers')) || [];
+          const emailExists = existingUsers.some(u => u.email === email);
+          if (emailExists) {
+            const netErrorDiv = document.getElementById('networkError');
+            netErrorDiv.textContent = 'Email already registered. Please login instead.';
+            netErrorDiv.style.display = 'block';
+            submitBtn.disabled = false;
+            submitBtn.textContent = 'Create Account';
+            return;
+          }
+          
+          const newUser = {
+            id: Date.now(),
+            username: username,
+            email: email,
+            createdAt: new Date().toISOString()
+          };
+          
+          localStorage.setItem('habitTrackerUser', JSON.stringify(newUser));
+          existingUsers.push(newUser);
+          localStorage.setItem('habitTrackerUsers', JSON.stringify(existingUsers));
+          
+          // Show success alert
+          const successAlert = document.getElementById('successAlert');
+          successAlert.style.display = 'block';
+          
+          // Reset everything
+          resetFormAndCheckboxes();
+          
+          // Redirect after short delay
+          setTimeout(() => {
+            window.location.href = 'login.html';
+          }, 2000);
+          
+        } catch (fallbackError) {
+          // Show network error
+          const netErrorDiv = document.getElementById('networkError');
+          netErrorDiv.textContent = error.message || 'Network error. Please check your connection and try again.';
+          netErrorDiv.style.display = 'block';
+          submitBtn.disabled = false;
+          submitBtn.textContent = 'Create Account';
+        }
+      }
+    });
+  });
+</script>
+</body>
+</html>

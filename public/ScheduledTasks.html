@@ -1,0 +1,1442 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Scheduled Tasks - GrowTrack</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+  <style>
+    :root {
+      --sidebar-bg: #f8f9fa;
+      --primary-color: #06b6d4;
+      --primary-dark: #028aa5;
+      --card-bg: #ffffff;
+      --text-muted: #555;
+      --bg-main: #f0f6f7;
+      --success: #10b981;
+    }
+
+    body, html {
+      margin: 0;
+      padding: 0;
+      font-family: 'Poppins', sans-serif;
+      background: var(--bg-main);
+      color: #092233;
+    }
+
+    /* Navbar */
+    .navbar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 70px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 100px 0 10px;
+      font-weight: 800;
+      font-size: 2rem;
+      background: #ffffffcc;
+      backdrop-filter: blur(6px);
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+      color: var(--primary-color);
+      z-index: 1000;
+    }
+
+    .logo span { color: #073642; }
+
+    /* Profile Container */
+    .profile-container {
+      position: relative;
+      margin-right: 25px;
+    }
+
+    .profile-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 55px; 
+      height: 55px;
+      border-radius: 50%;
+      overflow: hidden;
+      border: 2px solid var(--primary-color);
+      cursor: pointer;
+      transition: 0.2s ease;
+    }
+
+    .profile-btn img { 
+      width: 100%; 
+      height: 100%; 
+      object-fit: cover; 
+    }
+
+    .profile-dropdown {
+      display: none;
+      position: absolute;
+      top: 65px;
+      right: 0;
+      background: white;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+      border-radius: 8px;
+      overflow: hidden;
+      z-index: 1001;
+      min-width: 180px;
+    }
+
+    .profile-dropdown.active {
+      display: block;
+    }
+
+    .profile-dropdown-item {
+      width: 100%;
+      padding: 12px 16px;
+      border: none;
+      background: white;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 14px;
+      color: #333;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      font-family: 'Poppins', sans-serif;
+      font-weight: 500;
+      text-decoration: none;
+    }
+
+    .profile-dropdown-item:hover {
+      background: #f0f4f8;
+    }
+
+    .profile-dropdown-item i {
+      font-size: 14px;
+      width: 16px;
+      text-align: center;
+      color: var(--primary-color);
+    }
+
+    .profile-dropdown-item.logout {
+      color: #e63946;
+      border-top: 1px solid #f0f0f0;
+    }
+
+    .profile-dropdown-item.logout i {
+      color: #e63946;
+    }
+
+    /* Layout */
+    .container {
+      display: flex;
+      margin-top: 70px;
+      min-height: calc(100vh - 70px);
+    }
+
+    /* Sidebar */
+    .sidebar {
+      width: 220px;
+      background: var(--sidebar-bg);
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .sidebar h2 { font-size: 18px; margin-bottom: 10px; }
+    .sidebar a {
+      text-decoration: none;
+      color: #333;
+      padding: 10px 8px;
+      display: block;
+      border-radius: 5px;
+      background: white;
+      font-weight: 500;
+      transition: 0.3s;
+    }
+    .sidebar a:hover { box-shadow: 0 4px 8px rgba(0,0,0,0.15); }
+    .sidebar a.active { background: var(--primary-color); color: white; }
+
+    /* Main */
+    .main { flex: 1; padding: 30px 40px; }
+    
+    #openAddHabit {
+      background: var(--primary-color);
+      color: white; 
+      border: none;
+      padding: 10px 25px;
+      font-size: 15px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 600;
+      margin-bottom: 25px;
+    }
+    
+    #openAddHabit:hover { background: var(--primary-dark); }
+
+    /* Habit Cards */
+    .habit-bar {
+      background: white;
+      border-radius: 10px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+      padding: 15px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 15px;
+      position: relative;
+      transition: all 0.3s ease;
+    }
+    
+    .habit-bar:hover {
+      transform: translateX(5px);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.12);
+    }
+
+    .habit-info {
+      display: flex;
+      align-items: center;
+      flex: 1;
+      gap: 15px;
+    }
+    
+    .habit-info h3 { 
+      margin: 0; 
+      color: var(--primary-color); 
+      font-size: 16px; 
+    }
+    
+    .habit-info p { 
+      margin: 3px 0 0; 
+      font-size: 14px; 
+      color: var(--text-muted); 
+    }
+    
+    .habit-info small { 
+      display: block; 
+      margin-top: 5px; 
+      color: #666; 
+    }
+
+    .habit-actions { 
+      display: flex; 
+      align-items: center; 
+      gap: 10px; 
+      position: relative;
+    }
+    
+    .menu { 
+      font-size: 20px; 
+      color: #444; 
+      cursor: pointer; 
+      padding: 5px;
+    }
+
+    /* Dropdown menu */
+    .dropdown-menu {
+      display: none;
+      position: absolute;
+      top: 30px;
+      right: 0;
+      background: white;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+      border-radius: 8px;
+      overflow: hidden;
+      z-index: 10;
+      min-width: 180px;
+    }
+    .dropdown-menu.active { display: block; }
+
+    .toggle-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px 14px;
+      font-size: 14px;
+      color: #333;
+      font-family: 'Poppins', sans-serif;
+      font-weight: 500;
+    }
+
+    .toggle-item:first-child {
+      border-bottom: 1px solid #f0f0f0;
+    }
+
+    .toggle-item span {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .toggle-item i { 
+      font-size: 14px; 
+      width: 16px;
+      text-align: center;
+      color: var(--primary-color);
+    }
+
+    .dropdown-item {
+      width: 100%;
+      padding: 10px 14px;
+      border: none;
+      background: white;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 14px;
+      color: #333;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      font-family: 'Poppins', sans-serif;
+      font-weight: 500;
+    }
+
+    .dropdown-item:hover { background: #f0f4f8; }
+    .dropdown-item i { 
+      font-size: 14px; 
+      width: 16px;
+      text-align: center;
+    }
+
+    .dropdown-item.edit { 
+      color: #333;
+      border-top: 1px solid #f0f0f0;
+    }
+
+    .dropdown-item.edit i { 
+      color: var(--primary-color);
+    }
+
+    .dropdown-item.delete { 
+      color: #e63946; 
+      font-weight: 600;
+      border-top: 1px solid #f0f0f0;
+      margin-top: 5px;
+    }
+
+    .dropdown-item.delete i { 
+      color: #e63946;
+    }
+
+    /* Modal styling */
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: rgba(0,0,0,0.3);
+      backdrop-filter: blur(5px);
+      align-items: center; justify-content: center;
+      z-index: 2000;
+    }
+    .modal-content {
+      background: white;
+      padding: 25px;
+      border-radius: 12px;
+      width: 350px;
+      text-align: center;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+      animation: fadeIn 0.3s;
+    }
+    .modal-content h2 {
+      color: var(--primary-color);
+      margin-bottom: 15px;
+    }
+
+    .modal-content input[type="text"]:not(#hourInput):not(#minuteInput):not(#alarmHourInput):not(#alarmMinuteInput) {
+      width: 100%;
+      padding: 12px 15px;
+      border: 2px solid #ddd;
+      border-radius: 10px;
+      margin-bottom: 15px;
+      font-size: 16px;
+      font-family: 'Poppins', sans-serif;
+      height: 50px;
+      box-sizing: border-box;
+      outline: none;
+      transition: border-color 0.3s;
+    }
+
+    .modal-content input[type="text"]:focus {
+      border-color: #06b6d4;
+    }
+
+    .modal-content input[type="date"] {
+      width: 100%;
+      padding: 12px 15px;
+      border: 2px solid #ddd;
+      border-radius: 10px;
+      margin-bottom: 15px;
+      font-size: 16px;
+      font-family: 'Poppins', sans-serif;
+      height: 50px;
+      box-sizing: border-box;
+      outline: none;
+      transition: border-color 0.3s;
+    }
+
+    .modal-content input[type="date"]:focus {
+      border-color: #06b6d4;
+    }
+
+    .modal-buttons {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 10px;
+    }
+    .modal-buttons button {
+      flex: 1;
+      margin: 5px;
+      border: none;
+      padding: 10px;
+      border-radius: 6px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+    .save-btn { background: var(--primary-color); color: white; }
+    .cancel-btn { background: #ccc; }
+    .delete-yes { background: #e63946; color: white; }
+
+    /* Toggle Switch */
+    .switch {
+      position: relative;
+      display: inline-block;
+      width: 50px;
+      height: 24px;
+    }
+    .switch input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+    .slider {
+      position: absolute;
+      cursor: pointer;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: #ccc;
+      border-radius: 24px;
+      transition: 0.3s;
+    }
+    .slider:before {
+      position: absolute;
+      content: "";
+      height: 16px;
+      width: 16px;
+      left: 4px;
+      bottom: 4px;
+      background-color: white;
+      border-radius: 50%;
+      transition: 0.3s;
+    }
+    input:checked + .slider {
+      background-color: #06b6d4;
+    }
+    input:checked + .slider:before {
+      transform: translateX(26px);
+    }
+
+    /* Time Picker */
+    .time-picker {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: #fff;
+      border: 2px solid #ddd;
+      border-radius: 10px;
+      padding: 6px 10px;
+      width: 100%;
+      height: 50px;
+      box-sizing: border-box;
+      margin-bottom: 15px;
+      transition: border-color 0.3s;
+    }
+
+    .time-picker:focus-within {
+      border-color: #06b6d4;
+    }
+
+    .time-input-group {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-grow: 1;
+      gap: 6px;
+    }
+
+    .time-input-group input {
+      width: 40px;
+      text-align: center;
+      font-size: 16px;
+      font-weight: 600;
+      border: none;
+      outline: none;
+      background: transparent;
+      color: #333;
+      font-family: 'Poppins', sans-serif;
+    }
+
+    .colon {
+      font-size: 18px;
+      font-weight: 600;
+      color: #333;
+    }
+
+    .period {
+      font-size: 16px;
+      font-weight: 600;
+      color: #333;
+      cursor: pointer;
+      margin-left: 8px;
+      transition: color 0.2s;
+      padding: 4px 8px;
+      border-radius: 4px;
+    }
+
+    .period:hover {
+      color: #06b6d4;
+      background: #f0f4f8;
+    }
+
+    /* Clock button */
+    .time-btn {
+      background: #06b6d4;
+      border: none;
+      border-radius: 8px;
+      width: 45px;
+      height: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      flex-shrink: 0;
+      transition: background 0.2s;
+    }
+
+    .time-btn:hover {
+      background: #028aa5;
+    }
+
+    .clock-icon {
+      position: relative;
+      width: 18px;
+      height: 18px;
+      border: 2px solid white;
+      border-radius: 50%;
+    }
+
+    .clock-icon::before {
+      content: '';
+      position: absolute;
+      top: 3px;
+      left: 7px;
+      width: 2px;
+      height: 5px;
+      background: white;
+      border-radius: 2px;
+    }
+
+    .clock-icon::after {
+      content: '';
+      position: absolute;
+      top: 3px;
+      left: 7px;
+      width: 5px;
+      height: 2px;
+      background: white;
+      border-radius: 2px;
+    }
+
+    /* Clock Modal Styles */
+    .time-content {
+      width: 400px;
+      text-align: center;
+    }
+
+    .clock {
+      width: 220px;
+      height: 220px;
+      border-radius: 50%;
+      background: white;
+      border: 4px solid black;
+      position: relative;
+      margin: 20px auto;
+    }
+
+    .hand-line {
+      width: 3px;
+      height: 90px;
+      background: black;
+      position: absolute;
+      top: 20px;
+      left: 50%;
+      transform-origin: bottom center;
+      transition: 0.2s linear;
+    }
+
+    .center-dot {
+      width: 12px;
+      height: 12px;
+      background: black;
+      border-radius: 50%;
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      z-index: 2;
+    }
+
+    .number {
+      position: absolute;
+      color: black;
+      font-weight: 600;
+      font-size: 14px;
+      transform: translate(-50%, -50%);
+      cursor: pointer;
+    }
+
+    .time-footer {
+      margin-top: 15px;
+    }
+
+    .clock-display {
+      font-weight: 600;
+      color: #092233;
+      font-size: 18px;
+      margin-bottom: 10px;
+    }
+
+    .am-pm {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      margin-top: 5px;
+    }
+
+    .am-pm button {
+      width: 60px;
+      border: 2px solid #06b6d4;
+      background: #f0f4f8;
+      border-radius: 8px;
+      padding: 8px;
+      cursor: pointer;
+      font-weight: 600;
+      transition: 0.2s;
+    }
+
+    .am-pm button.active {
+      background: #06b6d4;
+      color: white;
+      border-color: #06b6d4;
+    }
+
+    .save-time {
+      background: #06b6d4;
+      border: none;
+      color: white;
+      padding: 12px 20px;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: 0.2s;
+      font-size: 16px;
+      font-weight: 600;
+      width: 100%;
+      margin-top: 15px;
+    }
+
+    .save-time:hover {
+      background: #028aa5;
+    }
+
+    .close-btn {
+      position: absolute;
+      top: 10px;
+      right: 15px;
+      font-size: 22px;
+      color: #333;
+      cursor: pointer;
+    }
+    
+    @keyframes fadeIn {
+      from { opacity: 0; transform: scale(0.9); }
+      to { opacity: 1; transform: scale(1); }
+    }
+  </style>
+</head>
+
+<body>
+  <header class="navbar">
+    <div class="logo"><span>Habit Tracker</span></div>
+    <div class="profile-container">
+      <div class="profile-btn">
+        <img src="user.png" alt="Profile">
+      </div>
+      <div class="profile-dropdown">
+        <a href="profile.html" class="profile-dropdown-item">
+          <i class="fa-solid fa-user"></i> Profile
+        </a>
+        <a href="#" class="profile-dropdown-item logout">
+          <i class="fa-solid fa-right-from-bracket"></i> Logout
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <div class="container">
+    <div class="sidebar">
+      <h2 id="usernameDisplay">Guest</h2>
+      <a href="dashboard.html">All Habits</a>
+      <a href="dailyHabits.html">Daily Habits</a>
+      <a href="ScheduledTasks.html" class="active">Scheduled Tasks</a>
+      <a href="calendar.html">Analytics</a>
+    </div>
+
+    <div class="main">
+      <button id="openAddHabit">+ Add Task</button>
+      <div id="habitList"></div>
+    </div>
+  </div>
+
+  <!-- Add/Edit Habit Modal -->
+  <div id="addModal" class="modal">
+    <div class="modal-content">
+      <h2 id="modalTitle">Add Scheduled Task</h2>
+      <input type="text" id="habitName" placeholder="Task Name">
+      <input type="text" id="habitDescription" placeholder="Task Description">
+      <input type="date" id="habitDate">
+      
+      <div class="time-picker">
+        <div class="time-input-group">
+          <input type="text" id="hourInput" maxlength="2" value="12" placeholder="12">
+          <span class="colon">:</span>
+          <input type="text" id="minuteInput" maxlength="2" value="00" placeholder="00">
+          <span class="period" id="periodDisplay">AM</span>
+        </div>
+        <button id="openClock" class="time-btn">
+          <span class="clock-icon"></span>
+        </button>
+      </div>
+
+      <div class="modal-buttons">
+        <button class="save-btn" id="saveHabit">Save</button>
+        <button class="cancel-btn" id="cancelHabit">Cancel</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Clock Modal -->
+  <div id="timeModal" class="modal">
+    <div class="modal-content time-content">
+      <span class="close-btn" id="closeModal">&times;</span>
+      <h3 id="clockTitle">Select Hour</h3>
+      <div class="clock" id="clock">
+        <div class="hand-line" id="hand"></div>
+        <div class="center-dot"></div>
+      </div>
+
+      <div class="time-footer">
+        <div class="clock-display" id="clockDisplay">12:00 AM</div>
+        <div class="am-pm">
+          <button id="amBtn" class="active">AM</button>
+          <button id="pmBtn">PM</button>
+        </div>
+      </div>
+
+      <button class="save-time" id="saveTimeBtn">Save Time</button>
+    </div>
+  </div>
+
+  <!-- Alarm Modal -->
+  <div id="alarmModal" class="modal">
+    <div class="modal-content">
+      <h2>Set Alarm</h2>
+      <input type="date" id="alarmDate">
+      
+      <div class="time-picker">
+        <div class="time-input-group">
+          <input type="text" id="alarmHourInput" maxlength="2" value="12" placeholder="12">
+          <span class="colon">:</span>
+          <input type="text" id="alarmMinuteInput" maxlength="2" value="00" placeholder="00">
+          <span class="period" id="alarmPeriodDisplay">AM</span>
+        </div>
+        <button id="openAlarmClock" class="time-btn">
+          <span class="clock-icon"></span>
+        </button>
+      </div>
+
+      <div class="modal-buttons">
+        <button class="save-btn" id="saveAlarm">Save Alarm</button>
+        <button class="cancel-btn" id="cancelAlarm">Cancel</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Delete Confirmation Modal -->
+  <div id="deleteModal" class="modal">
+    <div class="modal-content">
+      <h2>Delete Task?</h2>
+      <p>Are you sure you want to delete this task?</p>
+      <div class="modal-buttons">
+        <button class="delete-yes" id="confirmDelete">Yes</button>
+        <button class="cancel-btn" id="cancelDelete">No</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+(() => {
+  const API_BASE = 'https://habit-tracker-wsv3.onrender.com';
+  const USE_API = true;
+
+  // DOM elements
+  const habitList = document.getElementById("habitList");
+  const addModal = document.getElementById("addModal");
+  const timeModal = document.getElementById("timeModal");
+  const alarmModal = document.getElementById("alarmModal");
+  const deleteModal = document.getElementById("deleteModal");
+
+  // Time inputs
+  const hourInput = document.getElementById("hourInput");
+  const minuteInput = document.getElementById("minuteInput");
+  const periodDisplay = document.getElementById("periodDisplay");
+
+  // Alarm inputs
+  const alarmDateInput = document.getElementById("alarmDate");
+  const alarmHourInput = document.getElementById("alarmHourInput");
+  const alarmMinuteInput = document.getElementById("alarmMinuteInput");
+  const alarmPeriodDisplay = document.getElementById("alarmPeriodDisplay");
+
+  // Clock elements
+  const openClock = document.getElementById("openClock");
+  const openAlarmClock = document.getElementById("openAlarmClock");
+  const closeModal = document.getElementById("closeModal");
+  const clock = document.getElementById("clock");
+  const hand = document.getElementById("hand");
+  const amBtn = document.getElementById("amBtn");
+  const pmBtn = document.getElementById("pmBtn");
+  const saveTimeBtn = document.getElementById("saveTimeBtn");
+  const clockTitle = document.getElementById("clockTitle");
+  const clockDisplay = document.getElementById("clockDisplay");
+
+  // Modal elements
+  const modalTitle = document.getElementById("modalTitle");
+  const habitNameInput = document.getElementById("habitName");
+  const habitDescriptionInput = document.getElementById("habitDescription");
+  const habitDateInput = document.getElementById("habitDate");
+  const openAddHabitBtn = document.getElementById("openAddHabit");
+  const saveHabitBtn = document.getElementById("saveHabit");
+  const cancelHabitBtn = document.getElementById("cancelHabit");
+  const saveAlarmBtn = document.getElementById("saveAlarm");
+  const cancelAlarmBtn = document.getElementById("cancelAlarm");
+  const confirmDeleteBtn = document.getElementById("confirmDelete");
+  const cancelDeleteBtn = document.getElementById("cancelDelete");
+
+  // Profile dropdown elements
+  const profileBtn = document.querySelector(".profile-btn");
+  const profileDropdown = document.querySelector(".profile-dropdown");
+
+  // State
+  let currentUser = null;
+  let currentHabit = null;
+  let selectedHour = 12;
+  let selectedMinute = 0;
+  let isAM = true;
+  let selectingHour = true;
+  let isEditing = false;
+  let editingHabitId = null;
+  let currentTimeContext = "habit";
+
+  // ===== AUTHENTICATION =====
+  function init() {
+    const isLoggedIn = localStorage.getItem('growtrackLoggedIn');
+    const currentUserData = localStorage.getItem('growtrackCurrentUser');
+
+    if (isLoggedIn !== 'true' || !currentUserData) {
+      window.location.href = "login.html";
+      return;
+    }
+
+    currentUser = JSON.parse(currentUserData);
+    
+    const usernameDisplay = document.getElementById("usernameDisplay");
+    if (usernameDisplay) usernameDisplay.textContent = currentUser.username || "Guest";
+
+    drawNumbers("hour");
+    updateClockDisplay();
+    loadHabits();
+  }
+
+  // ===== PROFILE DROPDOWN =====
+  if (profileBtn) {
+    profileBtn.addEventListener("click", (e) => {
+      e.stopPropagation();
+      profileDropdown.classList.toggle("active");
+    });
+  }
+
+  document.addEventListener("click", (e) => {
+    if (!e.target.closest(".profile-container")) {
+      if (profileDropdown) profileDropdown.classList.remove("active");
+    }
+  });
+
+  // ===== LOGOUT =====
+  const logoutBtn = document.querySelector('.profile-dropdown-item.logout');
+  if (logoutBtn) {
+    logoutBtn.addEventListener('click', function(e) {
+      e.preventDefault();
+      localStorage.removeItem('growtrackLoggedIn');
+      localStorage.removeItem('growtrackCurrentUser');
+      window.location.href = "login.html";
+    });
+  }
+
+  // ===== TIME INPUT MANAGEMENT =====
+  function setupTimeInput(inputEl, { isHour=false } = {}) {
+    if (!inputEl) return;
+    inputEl.addEventListener("input", (e) => {
+      let v = e.target.value.replace(/[^0-9]/g,"");
+      if (v.length > 2) v = v.slice(0,2);
+      if (v) {
+        let n = parseInt(v,10);
+        if (isHour) {
+          if (n < 1) v = "1";
+          else if (n > 12) v = "12";
+          else v = String(n);
+        } else {
+          if (n < 0) v = "00";
+          else if (n > 59) v = "59";
+          else v = String(n).padStart(2,"0");
+        }
+      }
+      e.target.value = v;
+    });
+  }
+  
+  setupTimeInput(hourInput, { isHour:true });
+  setupTimeInput(minuteInput, { isHour:false });
+  setupTimeInput(alarmHourInput, { isHour:true });
+  setupTimeInput(alarmMinuteInput, { isHour:false });
+
+  if (periodDisplay) {
+    periodDisplay.addEventListener("click", () => {
+      periodDisplay.textContent = periodDisplay.textContent === "AM" ? "PM" : "AM";
+    });
+  }
+
+  if (alarmPeriodDisplay) {
+    alarmPeriodDisplay.addEventListener("click", () => {
+      alarmPeriodDisplay.textContent = alarmPeriodDisplay.textContent === "AM" ? "PM" : "AM";
+    });
+  }
+
+  // ===== CLOCK UI =====
+  function drawNumbers(type) {
+    if (!clock) return;
+    clock.querySelectorAll(".number").forEach(n => n.remove());
+    const items = type === "hour"
+      ? Array.from({length:12}, (_,i)=>i+1)
+      : Array.from({length:12}, (_,i)=>String(i*5).padStart(2,"0"));
+    items.forEach((num,i) => {
+      const angle = (i*30 - 90) * Math.PI/180;
+      const x = 110 + 90 * Math.cos(angle);
+      const y = 110 + 90 * Math.sin(angle);
+      const div = document.createElement("div");
+      div.className = "number";
+      div.style.left = x + "px";
+      div.style.top = y + "px";
+      div.textContent = num;
+      div.onclick = () => selectValue(num);
+      clock.appendChild(div);
+    });
+  }
+
+  function updateClockDisplay() {
+    if (clockDisplay) {
+      clockDisplay.textContent = `${String(selectedHour).padStart(2,"0")}:${String(selectedMinute).padStart(2,"0")} ${isAM ? "AM" : "PM"}`;
+    }
+  }
+
+  function openTimeModal(context) {
+    if (!timeModal) return;
+    timeModal.style.display = "flex";
+    selectingHour = true;
+    if (clockTitle) clockTitle.textContent = "Select Hour";
+    drawNumbers("hour");
+    currentTimeContext = context;
+
+    let hEl = hourInput, mEl = minuteInput, pEl = periodDisplay;
+    if (context === "alarm") { 
+      hEl = alarmHourInput; 
+      mEl = alarmMinuteInput; 
+      pEl = alarmPeriodDisplay; 
+    }
+
+    selectedHour = parseInt(hEl?.value) || 12;
+    selectedMinute = parseInt(mEl?.value) || 0;
+    isAM = (pEl?.textContent || "AM").toUpperCase() === "AM";
+    if (amBtn && pmBtn) {
+      amBtn.classList.toggle("active", isAM);
+      pmBtn.classList.toggle("active", !isAM);
+    }
+    if (hand) hand.style.transform = `rotate(${selectedHour * 30}deg)`;
+    updateClockDisplay();
+  }
+
+  function selectValue(val) {
+    if (selectingHour) {
+      selectedHour = parseInt(val);
+      if (hand) hand.style.transform = `rotate(${selectedHour * 30}deg)`;
+      selectingHour = false;
+      if (clockTitle) clockTitle.textContent = "Select Minute";
+      drawNumbers("minute");
+    } else {
+      selectedMinute = parseInt(val);
+      if (hand) hand.style.transform = `rotate(${selectedMinute * 6}deg)`;
+    }
+    updateClockDisplay();
+  }
+
+  if (clock) {
+    clock.addEventListener("click", (e) => {
+      const rect = clock.getBoundingClientRect();
+      const x = e.clientX - rect.left - rect.width/2;
+      const y = e.clientY - rect.top - rect.height/2;
+      const angleDeg = (Math.atan2(y,x) * 180) / Math.PI + 90;
+      const deg = (angleDeg + 360) % 360;
+      if (selectingHour) {
+        selectedHour = Math.round(deg / 30) || 12;
+        if (hand) hand.style.transform = `rotate(${selectedHour * 30}deg)`;
+        selectingHour = false;
+        if (clockTitle) clockTitle.textContent = "Select Minute";
+        drawNumbers("minute");
+      } else {
+        const rawMinute = Math.round(deg / 6) % 60;
+        selectedMinute = rawMinute;
+        if (hand) hand.style.transform = `rotate(${deg}deg)`;
+      }
+      updateClockDisplay();
+    });
+  }
+
+  if (amBtn) {
+    amBtn.onclick = () => { isAM = true; if(amBtn) amBtn.classList.add("active"); if(pmBtn) pmBtn.classList.remove("active"); updateClockDisplay(); };
+  }
+  if (pmBtn) {
+    pmBtn.onclick = () => { isAM = false; if(pmBtn) pmBtn.classList.add("active"); if(amBtn) amBtn.classList.remove("active"); updateClockDisplay(); };
+  }
+  if (closeModal) {
+    closeModal.onclick = () => { if(timeModal) timeModal.style.display = "none"; };
+  }
+
+  if (saveTimeBtn) {
+    saveTimeBtn.onclick = () => {
+      let hEl = hourInput, mEl = minuteInput, pEl = periodDisplay;
+      if (currentTimeContext === "alarm") { 
+        hEl = alarmHourInput; 
+        mEl = alarmMinuteInput; 
+        pEl = alarmPeriodDisplay; 
+      }
+
+      if (hEl) hEl.value = String(selectedHour);
+      if (mEl) mEl.value = String(selectedMinute).padStart(2,"0");
+      if (pEl) pEl.textContent = isAM ? "AM" : "PM";
+      if (timeModal) timeModal.style.display = "none";
+      selectingHour = true;
+    };
+  }
+
+  if (openClock) {
+    openClock.onclick = () => openTimeModal("habit");
+  }
+
+  if (openAlarmClock) {
+    openAlarmClock.onclick = () => {
+      if (alarmModal) alarmModal.style.display = "none";
+      openTimeModal("alarm");
+      
+      const checkModalClose = setInterval(() => {
+          if (timeModal && timeModal.style.display === "none") {
+              clearInterval(checkModalClose);
+              if (alarmModal) alarmModal.style.display = "flex";
+          }
+      }, 100);
+    };
+  }
+
+  // ===== API FUNCTIONS =====
+  async function apiRequest(endpoint, options = {}) {
+    const url = `${API_BASE}${endpoint}`;
+    try {
+      const response = await fetch(url, {
+        headers: { "Content-Type": "application/json", ...(options.headers || {}) },
+        ...options
+      });
+      if (!response.ok) throw new Error(`HTTP ${response.status}`);
+      const contentType = response.headers.get("content-type") || "";
+      if (!contentType.includes("application/json")) return null;
+      return await response.json();
+    } catch (err) {
+      console.warn("apiRequest failed:", err.message);
+      throw err;
+    }
+  }
+
+  async function loadHabitsFromDB() {
+    if (!currentUser || !currentUser.id) return [];
+    try {
+      return await apiRequest(`/api/scheduled-tasks?userId=${currentUser.id}`);
+    } catch (err) {
+      console.error("Failed to load tasks from API:", err);
+      return [];
+    }
+  }
+
+  async function saveHabitToDB(habit) {
+    if (!currentUser || !currentUser.id) throw new Error("No user");
+    habit.userId = currentUser.id;
+    return await apiRequest(`/api/scheduled-tasks`, { method: "POST", body: JSON.stringify(habit) });
+  }
+
+  async function updateHabitInDB(id, updates) {
+    return await apiRequest(`/api/scheduled-tasks/${id}`, { method: "PUT", body: JSON.stringify(updates) });
+  }
+
+  async function deleteHabitFromDB(id) {
+    return await apiRequest(`/api/scheduled-tasks/${id}`, { method: "DELETE" });
+  }
+
+  // ===== RENDERING =====
+  function renderHabits(list) {
+    if (!habitList) return;
+    habitList.innerHTML = "";
+    
+    const pendingTasks = list.filter(task => task.completed !== true);
+    
+    if (!pendingTasks || pendingTasks.length === 0) {
+      habitList.innerHTML = '<div class="habit-bar"><div class="habit-info"><p>✨ No pending tasks! Great job! ✨</p></div></div>';
+      return;
+    }
+
+    pendingTasks.forEach(habit => {
+      const bar = document.createElement("div");
+      bar.className = "habit-bar";
+      
+      const alarmInfo = habit.alarm && habit.alarmDate ? 
+        `<small>🔔 Alarm: ${habit.alarmDate} at ${habit.alarmTime || '12:00 AM'}</small>` : '';
+      
+      bar.innerHTML = `
+        <div class="habit-info">
+          <div>
+            <h3>${escapeHtml(habit.name)}</h3>
+            <p>${habit.date || ""} ${habit.time ? "at " + habit.time : ""}</p>
+            ${habit.description ? `<small>${escapeHtml(habit.description)}</small>` : ''}
+            ${alarmInfo}
+          </div>
+        </div>
+        <div class="habit-actions">
+          <span class="menu" title="Options">⋮</span>
+          <div class="dropdown-menu">
+            <div class="toggle-item">
+              <span><i class="fa-solid fa-bell"></i> Alarm</span>
+              <label class="switch">
+                <input type="checkbox" class="alarm-toggle" ${habit.alarm ? "checked" : ""}>
+                <span class="slider"></span>
+              </label>
+            </div>
+            <div class="toggle-item">
+              <span><i class="fa-regular fa-clock"></i> Reminder</span>
+              <label class="switch">
+                <input type="checkbox" class="reminder-toggle" ${habit.reminder ? "checked" : ""}>
+                <span class="slider"></span>
+              </label>
+            </div>
+            <button class="dropdown-item edit"><i class="fa-solid fa-pen"></i> Edit Task</button>
+            <button class="dropdown-item delete"><i class="fa-solid fa-trash"></i> Delete Task</button>
+          </div>
+        </div>
+      `;
+      habitList.appendChild(bar);
+
+      const delBtn = bar.querySelector(".delete");
+      const editBtn = bar.querySelector(".edit");
+      const menu = bar.querySelector(".menu");
+      const dropdown = bar.querySelector(".dropdown-menu");
+      const alarmToggle = bar.querySelector(".alarm-toggle");
+      const reminderToggle = bar.querySelector(".reminder-toggle");
+
+      if (editBtn) {
+        editBtn.onclick = (e) => {
+          e.stopPropagation();
+          openEditModal(habit);
+          if (dropdown) dropdown.classList.remove("active");
+        };
+      }
+
+      if (delBtn) {
+        delBtn.onclick = (e) => {
+          e.stopPropagation();
+          currentHabit = habit;
+          if (deleteModal) deleteModal.style.display = "flex";
+          if (dropdown) dropdown.classList.remove("active");
+        };
+      }
+
+      if (alarmToggle) {
+        alarmToggle.onchange = async () => {
+          if (alarmToggle.checked) {
+            currentHabit = habit;
+            const today = new Date().toISOString().split("T")[0];
+            if (alarmDateInput) alarmDateInput.value = today;
+            
+            if (habit.time) {
+              const [timePart, period] = habit.time.split(" ");
+              const [hours, minutes] = (timePart || "12:00").split(":");
+              if (alarmHourInput) alarmHourInput.value = hours; 
+              if (alarmMinuteInput) alarmMinuteInput.value = minutes; 
+              if (alarmPeriodDisplay) alarmPeriodDisplay.textContent = period || "AM";
+            } else {
+              if (alarmHourInput) alarmHourInput.value = "12"; 
+              if (alarmMinuteInput) alarmMinuteInput.value = "00"; 
+              if (alarmPeriodDisplay) alarmPeriodDisplay.textContent = "AM";
+            }
+            
+            if (alarmModal) alarmModal.style.display = "flex";
+          } else {
+            await updateHabitInDB(habit._id, { 
+              alarm: false,
+              alarmDate: null,
+              alarmTime: null
+            });
+            await loadHabits();
+          }
+        };
+      }
+
+      if (reminderToggle) {
+        reminderToggle.onchange = async () => {
+          await updateHabitInDB(habit._id, { reminder: reminderToggle.checked });
+          await loadHabits();
+        };
+      }
+
+      if (menu) {
+        menu.onclick = (e) => {
+          e.stopPropagation();
+          document.querySelectorAll(".dropdown-menu").forEach(d => { 
+            if (d !== dropdown) d.classList.remove("active"); 
+          });
+          if (dropdown) dropdown.classList.toggle("active");
+        };
+      }
+    });
+  }
+
+  function openEditModal(habit) {
+    isEditing = true;
+    editingHabitId = habit._id;
+    if (modalTitle) modalTitle.textContent = "Edit Task";
+    
+    if (habitNameInput) habitNameInput.value = habit.name;
+    if (habitDescriptionInput) habitDescriptionInput.value = habit.description || "";
+    if (habitDateInput) habitDateInput.value = habit.date || "";
+    
+    if (habit.time) {
+      const [timePart, period] = habit.time.split(" ");
+      const [hours, minutes] = (timePart || "12:00").split(":");
+      if (hourInput) hourInput.value = hours;
+      if (minuteInput) minuteInput.value = minutes;
+      if (periodDisplay) periodDisplay.textContent = period || "AM";
+    } else {
+      if (hourInput) hourInput.value = "12";
+      if (minuteInput) minuteInput.value = "00";
+      if (periodDisplay) periodDisplay.textContent = "AM";
+    }
+    
+    if (addModal) addModal.style.display = "flex";
+  }
+
+  function escapeHtml(str) {
+    if (!str) return "";
+    return String(str)
+      .replace(/&/g,"&amp;")
+      .replace(/</g,"&lt;")
+      .replace(/>/g,"&gt;")
+      .replace(/"/g,"&quot;")
+      .replace(/'/g,"&#039;");
+  }
+
+  // ===== PAGE ACTIONS =====
+  async function loadHabits() {
+    try {
+      const list = await loadHabitsFromDB();
+      renderHabits(list);
+    } catch (err) {
+      console.error("loadHabits failed:", err);
+      renderHabits([]);
+    }
+  }
+
+  if (openAddHabitBtn) {
+    openAddHabitBtn.onclick = () => {
+      isEditing = false;
+      editingHabitId = null;
+      if (modalTitle) modalTitle.textContent = "Add Task";
+      if (habitNameInput) habitNameInput.value = "";
+      if (habitDescriptionInput) habitDescriptionInput.value = "";
+      if (habitDateInput) habitDateInput.value = "";
+      if (hourInput) hourInput.value = "12";
+      if (minuteInput) minuteInput.value = "00";
+      if (periodDisplay) periodDisplay.textContent = "AM";
+      if (addModal) addModal.style.display = "flex";
+    };
+  }
+
+  if (cancelHabitBtn) {
+    cancelHabitBtn.onclick = () => {
+      if (addModal) addModal.style.display = "none";
+    };
+  }
+
+  if (cancelAlarmBtn) {
+    cancelAlarmBtn.onclick = () => {
+      if (alarmModal) alarmModal.style.display = "none";
+      if (currentHabit) {
+        loadHabits();
+      }
+    };
+  }
+
+  // Save habit
+  if (saveHabitBtn) {
+    saveHabitBtn.addEventListener("click", async (e) => {
+      e.preventDefault();
+      const name = (habitNameInput?.value || "").trim();
+      const description = (habitDescriptionInput?.value || "").trim();
+      const date = habitDateInput?.value;
+      const hour = hourInput?.value || "12";
+      const minute = minuteInput?.value || "00";
+      const period = periodDisplay?.textContent || "AM";
+      const time = `${String(hour).padStart(2,"0")}:${String(minute).padStart(2,"0")} ${period}`;
+
+      if (!name) { alert("Please enter a task name"); return; }
+      if (!date) { alert("Please select a date"); return; }
+
+      const task = { 
+        name, 
+        description, 
+        date, 
+        time, 
+        status: "pending", 
+        alarm: false, 
+        reminder: false,
+        completed: false 
+      };
+
+      try {
+        if (isEditing && editingHabitId) {
+          await updateHabitInDB(editingHabitId, task);
+        } else {
+          await saveHabitToDB(task);
+        }
+        if (addModal) addModal.style.display = "none";
+        await loadHabits();
+      } catch (err) {
+        console.error("save failed", err);
+        alert("Failed to save task.");
+      }
+    });
+  }
+
+  // Save alarm
+  if (saveAlarmBtn) {
+    saveAlarmBtn.addEventListener("click", async (e) => {
+      e.preventDefault();
+      const alarmDate = alarmDateInput?.value;
+      const alarmHour = alarmHourInput?.value || "12";
+      const alarmMinute = alarmMinuteInput?.value || "00";
+      const alarmPeriod = alarmPeriodDisplay?.textContent || "AM";
+      const alarmTime = `${String(alarmHour).padStart(2,"0")}:${String(alarmMinute).padStart(2,"0")} ${alarmPeriod}`;
+
+      if (!currentHabit) { alert("No task selected"); return; }
+      if (!alarmDate) { alert("Please select alarm date"); return; }
+
+      try {
+        await updateHabitInDB(currentHabit._id, { 
+          alarm: true,
+          alarmDate: alarmDate,
+          alarmTime: alarmTime
+        });
+        if (alarmModal) alarmModal.style.display = "none";
+        await loadHabits();
+      } catch (err) {
+        console.error("saveAlarm failed", err);
+        alert("Failed to set alarm.");
+      }
+    });
+  }
+
+  // Delete modal
+  if (cancelDeleteBtn) {
+    cancelDeleteBtn.onclick = () => {
+      if (deleteModal) deleteModal.style.display = "none";
+    };
+  }
+
+  if (confirmDeleteBtn) {
+    confirmDeleteBtn.onclick = async () => {
+      if (!currentHabit) return;
+      try {
+        await deleteHabitFromDB(currentHabit._id);
+        if (deleteModal) deleteModal.style.display = "none";
+        currentHabit = null;
+        await loadHabits();
+      } catch (err) {
+        console.error("delete failed", err);
+        alert("Failed to delete.");
+      }
+    };
+  }
+
+  // Close dropdowns & modals
+  document.addEventListener("click", (e) => {
+    const isMenu = e.target.classList?.contains("menu");
+    const isDropdown = e.target.closest?.(".dropdown-menu");
+    if (!isMenu && !isDropdown) {
+      document.querySelectorAll(".dropdown-menu").forEach(d => d.classList.remove("active"));
+    }
+    if (e.target.classList && e.target.classList.contains("modal")) {
+      if (addModal) addModal.style.display = "none";
+      if (alarmModal) alarmModal.style.display = "none";
+      if (deleteModal) deleteModal.style.display = "none";
+      if (timeModal) timeModal.style.display = "none";
+    }
+  });
+
+  // Profile navigation
+  const profileLink = document.querySelector('.profile-dropdown-item[href="profile.html"]');
+  if (profileLink) {
+    profileLink.addEventListener('click', function(e) {
+      e.preventDefault();
+      localStorage.setItem('previousPage', window.location.href);
+      window.location.href = 'profile.html';
+    });
+  }
+
+  // ===== INITIALIZATION =====
+  drawNumbers("hour");
+  updateClockDisplay();
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", init);
+  } else {
+    init();
+  }
+
+})();
+</script>
+</body>
+</html>
